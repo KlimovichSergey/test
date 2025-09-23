@@ -16,8 +16,8 @@ public class Cart {
     private final String BUTTON_DELETE_PRODUCT = "//span[@class='wa-tooltip is-inline bottom']";
     private final String PRICE_PRODUCT_TEXT = "//div[@class='wa-price-total js-product-full-price']";
     private final String PRICE_SECOND_PRODUCT_TEXT = "//div[@class='wa-product '][2]//div[@class='wa-price-total js-product-full-price']";
-    private final String FIELD_PRODUCT_QUANTITY = "//div[@class='wa-section-body']//input[@class='wa-field js-product-quantity ']";
-    private final String FIELD_SECOND_PRODUCT_QUANTITY = "//input[@name='quantity[608397]']";
+    private final String FIELD_PRODUCT_QUANTITY = "//div[@class='wa-product '][1]//input[@class='wa-field js-product-quantity ']";
+    private final String FIELD_SECOND_PRODUCT_QUANTITY = "//div[@class='wa-product '][2]//input[@class='wa-field js-product-quantity ']";
     private final String BUTTON_PLUS_PRODUCT = "//div[@class='wa-button-wrapper']//button[@class='wa-button s-plus-button outlined js-increase']";
     private final String BUTTON_MINUS_PRODUCT = "//div[@class='wa-button-wrapper']//button[@class='wa-button s-minus-button outlined js-decrease']";
     private final String LINK_BACK = "//div[@class='s-back-link']";
@@ -70,6 +70,7 @@ public class Cart {
     }
 
     public String getFieldProductQuantityText() {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(FIELD_PRODUCT_QUANTITY)));
         return WebDriver.getDriver().findElement(By.xpath(FIELD_PRODUCT_QUANTITY)).getAttribute("value");
     }
 
@@ -79,11 +80,11 @@ public class Cart {
 
     public void clickButtonPlusProduct() {
         WebDriver.getDriver().findElement(By.xpath(BUTTON_PLUS_PRODUCT)).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(BUTTON_PLUS_PRODUCT)));
     }
 
     public void clickButtonMinusProduct() {
         WebDriver.getDriver().findElement(By.xpath(BUTTON_MINUS_PRODUCT)).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(BUTTON_PLUS_PRODUCT)));
     }
 
     public void clickLinkBack() {

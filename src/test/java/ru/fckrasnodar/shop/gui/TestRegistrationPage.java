@@ -1,9 +1,11 @@
 package ru.fckrasnodar.shop.gui;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestRegistrationPage extends TestBase {
 
@@ -20,17 +22,19 @@ public class TestRegistrationPage extends TestBase {
         RegistrationPage registrationPage = new RegistrationPage();
         registrationPage.clickButtonRegistrationForm();
 
-        Assertions.assertEquals("РЕГИСТРАЦИЯ", registrationPage.getHeaderPageText());
-        Assertions.assertEquals("Фамилия *", registrationPage.getFieldLastNameText());
-        Assertions.assertEquals("Имя *", registrationPage.getFieldFirstNameText());
-        Assertions.assertEquals("Отчество", registrationPage.getFieldMiddleNameText());
-        Assertions.assertEquals("Телефон *", registrationPage.getFieldPhoneText());
-        Assertions.assertEquals("Email *", registrationPage.getFieldEmailText());
-        Assertions.assertEquals("День рождения", registrationPage.getFieldBirthdayText());
-        Assertions.assertEquals("Пароль *", registrationPage.getFieldPasswordText());
-        Assertions.assertEquals("Подтвердите пароль *", registrationPage.getFieldConfirmPasswordText());
-        Assertions.assertEquals("Я даю своё согласие на обработку моих персональных данных и принимаю Пользовательское соглашение", registrationPage.getFieldTermAcceptedText());
-        Assertions.assertEquals("Уже регистрировались? Вход", registrationPage.getFieldQuestionSignUpeText());
+        assertAll(
+                () -> assertEquals("РЕГИСТРАЦИЯ", registrationPage.getHeaderPageText()),
+                () -> assertEquals("Фамилия *", registrationPage.getFieldLastNameText()),
+                () -> assertEquals("Имя *", registrationPage.getFieldFirstNameText()),
+                () -> assertEquals("Отчество", registrationPage.getFieldMiddleNameText()),
+                () -> assertEquals("Телефон *", registrationPage.getFieldPhoneText()),
+                () -> assertEquals("Email *", registrationPage.getFieldEmailText()),
+                () -> assertEquals("День рождения", registrationPage.getFieldBirthdayText()),
+                () -> assertEquals("Пароль *", registrationPage.getFieldPasswordText()),
+                () -> assertEquals("Подтвердите пароль *", registrationPage.getFieldConfirmPasswordText()),
+                () -> assertEquals("Я даю своё согласие на обработку моих персональных данных и принимаю Пользовательское соглашение", registrationPage.getFieldTermAcceptedText()),
+                () -> assertEquals("Уже регистрировались? Вход", registrationPage.getFieldQuestionSignUpeText())
+        );
     }
 
     @Test
@@ -41,12 +45,14 @@ public class TestRegistrationPage extends TestBase {
         registrationPage.clickAcceptedCheckBox();
         registrationPage.clickButtonSubmit();
 
-        Assertions.assertEquals("Поле обязательное", registrationPage.getLastNameErrorMessageText());
-        Assertions.assertEquals("Поле обязательное", registrationPage.getFirstNameErrorMessageText());
-        Assertions.assertEquals("Поле обязательное", registrationPage.getPhoneErrorMessageText());
-        Assertions.assertEquals("Поле обязательное", registrationPage.getEmailErrorMessageText());
-        Assertions.assertEquals("Поле обязательное", registrationPage.getPasswordErrorMessageText());
-        Assertions.assertEquals("Поле обязательное", registrationPage.getPasswordConfirmErrorMessageText());
+        assertAll(
+                () -> assertEquals("Поле обязательное", registrationPage.getLastNameErrorMessageText()),
+                () -> assertEquals("Поле обязательное", registrationPage.getFirstNameErrorMessageText()),
+                () -> assertEquals("Поле обязательное", registrationPage.getPhoneErrorMessageText()),
+                () -> assertEquals("Поле обязательное", registrationPage.getEmailErrorMessageText()),
+                () -> assertEquals("Поле обязательное", registrationPage.getPasswordErrorMessageText()),
+                () -> assertEquals("Поле обязательное", registrationPage.getPasswordConfirmErrorMessageText())
+        );
     }
 
     @Test
@@ -54,17 +60,19 @@ public class TestRegistrationPage extends TestBase {
     public void inputRequiredFieldClickSubmitGetText() {
         RegistrationPage registrationPage = new RegistrationPage();
         registrationPage.clickButtonRegistrationForm();
-        registrationPage.sendKeysPlaceHolderLastName("@#$%^^Po&&12344");
-        registrationPage.sendKeysPlaceHolderFirstName("Ww@54$#@");
-        registrationPage.sendKeysPlaceHolderPhone("0000000000");
+        registrationPage.sendKeysPlaceHolderLastName(RandomUser.getRandomLastName());
+        registrationPage.sendKeysPlaceHolderFirstName(RandomUser.getRandomFirstName());
+        registrationPage.sendKeysPlaceHolderPhone(RandomUser.getRandomNumberPhone());
         registrationPage.sendKeysPlaceHolderEmail("test@Test");
-        registrationPage.sendKeysPlaceHolderPassword("ggF123!@#");
+        registrationPage.sendKeysPlaceHolderPassword(RandomUser.getRandomPassword());
         registrationPage.sendKeysPlaceHolderPasswordConfirm("hh@!43FR");
         registrationPage.clickButtonSubmit();
 
-        Assertions.assertEquals("Email-адрес введен неправильно", registrationPage.getInvalidEmailText());
-        Assertions.assertEquals("Пароли не совпадают", registrationPage.getNoMatchPasswordConfirmText());
-        Assertions.assertEquals("Подтвердите согласие", registrationPage.getNoTermAcceptedText());
+        assertAll(
+                () -> assertEquals("Email-адрес введен неправильно", registrationPage.getInvalidEmailText()),
+                () -> assertEquals("Пароли не совпадают", registrationPage.getNoMatchPasswordConfirmText()),
+                () -> assertEquals("Подтвердите согласие", registrationPage.getNoTermAcceptedText())
+        );
     }
 
     @Test
@@ -74,16 +82,16 @@ public class TestRegistrationPage extends TestBase {
         registrationPage.clickButtonRegistrationForm();
         registrationPage.sendKeysPlaceHolderLastName("");
         registrationPage.sendKeysPlaceHolderFirstName("");
-        registrationPage.sendKeysPlaceHolderPhone("0000000000");
-        registrationPage.sendKeysPlaceHolderEmail("test@Test");
-        registrationPage.sendKeysPlaceHolderPassword("ggF123!@#");
-        registrationPage.sendKeysPlaceHolderPasswordConfirm("hh@!43FR");
+        registrationPage.sendKeysPlaceHolderPhone(RandomUser.getRandomNumberPhone());
+        registrationPage.sendKeysPlaceHolderEmail(RandomUser.getRandomEmail());
+        registrationPage.sendKeysPlaceHolderPassword(RandomUser.getRandomPassword());
+        registrationPage.sendKeysPlaceHolderPasswordConfirm(RandomUser.getRandomPassword());
         registrationPage.clickButtonSubmit();
 
-        Assertions.assertEquals("Поле обязательное", registrationPage.getLastNameErrorMessageText());
-        Assertions.assertEquals("Поле обязательное", registrationPage.getFirstNameErrorMessageText());
-        Assertions.assertEquals("Email-адрес введен неправильно", registrationPage.getInvalidEmailText());
-        Assertions.assertEquals("Пароли не совпадают", registrationPage.getNoMatchPasswordConfirmText());
+        assertAll(
+                () -> assertEquals("Поле обязательное", registrationPage.getLastNameErrorMessageText()),
+                () -> assertEquals("Поле обязательное", registrationPage.getFirstNameErrorMessageText())
+        );
     }
 
     @Test
@@ -91,15 +99,15 @@ public class TestRegistrationPage extends TestBase {
     public void inputIncorrectLastNameFirstNameClickSubmitGetText() {
         RegistrationPage registrationPage = new RegistrationPage();
         registrationPage.clickButtonRegistrationForm();
-        registrationPage.sendKeysPlaceHolderLastName("@#$%^^Po&&12344");
-        registrationPage.sendKeysPlaceHolderFirstName("Ww@54$#@");
-        registrationPage.sendKeysPlaceHolderPhone("0000000000");
-        registrationPage.sendKeysPlaceHolderEmail("test@test10.com");
+        registrationPage.sendKeysPlaceHolderLastName(RandomUser.getRandomLastName());
+        registrationPage.sendKeysPlaceHolderFirstName(RandomUser.getRandomFirstName());
+        registrationPage.sendKeysPlaceHolderPhone(RandomUser.getRandomNumberPhone());
+        registrationPage.sendKeysPlaceHolderEmail(RandomUser.getRandomEmail());
         registrationPage.sendKeysPlaceHolderPassword("ggF123!@#");
         registrationPage.sendKeysPlaceHolderPasswordConfirm("ggF123!@#");
         registrationPage.clickButtonSubmit();
 
-        Assertions.assertEquals("Подтвердите согласие", registrationPage.getNoTermAcceptedText());
+        assertEquals("Подтвердите согласие", registrationPage.getNoTermAcceptedText());
     }
 
     @Test
@@ -107,16 +115,16 @@ public class TestRegistrationPage extends TestBase {
     public void inputFillAllRequiredFieldsAcceptPersonalDataClickSubmitGetText() {
         RegistrationPage registrationPage = new RegistrationPage();
         registrationPage.clickButtonRegistrationForm();
-        registrationPage.sendKeysPlaceHolderLastName("Test");
-        registrationPage.sendKeysPlaceHolderFirstName("Test");
-        registrationPage.sendKeysPlaceHolderPhone("9000000000");
-        registrationPage.sendKeysPlaceHolderEmail("test@test10.com");
+        registrationPage.sendKeysPlaceHolderLastName(RandomUser.getRandomLastName());
+        registrationPage.sendKeysPlaceHolderFirstName(RandomUser.getRandomFirstName());
+        registrationPage.sendKeysPlaceHolderPhone(RandomUser.getRandomNumberPhone());
+        registrationPage.sendKeysPlaceHolderEmail(RandomUser.getRandomEmail());
         registrationPage.sendKeysPlaceHolderPassword("ggF123!@#");
         registrationPage.sendKeysPlaceHolderPasswordConfirm("ggF123!@#");
         registrationPage.clickAcceptedCheckBox();
         registrationPage.clickButtonSubmit();
 
-        Assertions.assertEquals("Неправильная дата", registrationPage.getSingUpErrorMessageText());
+        assertEquals("Неправильная дата", registrationPage.getSingUpErrorMessageText());
     }
 
     @Test
@@ -124,11 +132,11 @@ public class TestRegistrationPage extends TestBase {
     public void inputFieldsClickSubmitGetText() {
         RegistrationPage registrationPage = new RegistrationPage();
         registrationPage.clickButtonRegistrationForm();
-        registrationPage.sendKeysPlaceHolderLastName("Test");
-        registrationPage.sendKeysPlaceHolderFirstName("Test");
-        registrationPage.sendKeysPlaceHolderMiddleName("Test");
-        registrationPage.sendKeysPlaceHolderPhone("9000000000");
-        registrationPage.sendKeysPlaceHolderEmail("test@test10.com");
+        registrationPage.sendKeysPlaceHolderLastName(RandomUser.getRandomLastName());
+        registrationPage.sendKeysPlaceHolderFirstName(RandomUser.getRandomFirstName());
+        registrationPage.sendKeysPlaceHolderMiddleName(RandomUser.getRandomMiddleName());
+        registrationPage.sendKeysPlaceHolderPhone(RandomUser.getRandomNumberPhone());
+        registrationPage.sendKeysPlaceHolderEmail(RandomUser.getRandomEmail());
         registrationPage.sendKeysPlaceHolderPassword("ggF123!@#");
         registrationPage.sendKeysPlaceHolderPasswordConfirm("ggF123!@#");
         registrationPage.clickLinkSelectDay();
@@ -138,9 +146,10 @@ public class TestRegistrationPage extends TestBase {
         registrationPage.sendKeysBirthdayPlaceHolderYear("0000");
         registrationPage.clickButtonSubmit();
 
-        Assertions.assertEquals("Подтвердите согласие", registrationPage.getNoTermAcceptedText());
-        Assertions.assertEquals("15",registrationPage.getTestDayText());
-        Assertions.assertEquals("АПРЕЛЬ",registrationPage.getTestMonthText());
+        assertAll(
+                () -> assertEquals("15", registrationPage.getTestDayText()),
+                () -> assertEquals("АПРЕЛЬ", registrationPage.getTestMonthText())
+        );
     }
 
     @Test
@@ -148,10 +157,10 @@ public class TestRegistrationPage extends TestBase {
     public void inputFieldClickPersonalDataClickSubmitGetText() {
         RegistrationPage registrationPage = new RegistrationPage();
         registrationPage.clickButtonRegistrationForm();
-        registrationPage.sendKeysPlaceHolderLastName("Test");
-        registrationPage.sendKeysPlaceHolderFirstName("Test");
-        registrationPage.sendKeysPlaceHolderMiddleName("Test");
-        registrationPage.sendKeysPlaceHolderPhone("9000000000");
+        registrationPage.sendKeysPlaceHolderLastName(RandomUser.getRandomLastName());
+        registrationPage.sendKeysPlaceHolderFirstName(RandomUser.getRandomFirstName());
+        registrationPage.sendKeysPlaceHolderMiddleName(RandomUser.getRandomMiddleName());
+        registrationPage.sendKeysPlaceHolderPhone(RandomUser.getRandomNumberPhone());
         registrationPage.sendKeysPlaceHolderEmail("test@test9.com");
         registrationPage.sendKeysPlaceHolderPassword("ggF123!@#");
         registrationPage.sendKeysPlaceHolderPasswordConfirm("ggF123!@#");
@@ -159,10 +168,10 @@ public class TestRegistrationPage extends TestBase {
         registrationPage.clickBirthdayPlaceHolderDay();
         registrationPage.clickLinkSelectMonth();
         registrationPage.clickBirthdayPlaceHolderMonth();
-        registrationPage.sendKeysBirthdayPlaceHolderYear("0000");
+        registrationPage.sendKeysBirthdayPlaceHolderYear("2005");
         registrationPage.clickAcceptedCheckBox();
         registrationPage.clickButtonSubmit();
 
-        Assertions.assertEquals("Пользователь с таким же значением поля «Email» уже зарегистрирован.",registrationPage.getEmailExistText());
+        assertEquals("Пользователь с таким же значением поля «Email» уже зарегистрирован.", registrationPage.getEmailExistText());
     }
 }

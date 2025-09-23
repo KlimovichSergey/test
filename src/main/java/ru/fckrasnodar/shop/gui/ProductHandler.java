@@ -10,7 +10,7 @@ import java.time.Duration;
 public class ProductHandler {
     org.openqa.selenium.WebDriver driver;
 
-    public ProductHandler(){
+    public ProductHandler() {
         this.driver = WebDriver.getDriver();
     }
 
@@ -26,17 +26,23 @@ public class ProductHandler {
 
     WebDriverWait wait = new WebDriverWait(WebDriver.getDriver(), Duration.ofSeconds(7));
 
+    public void backPage() {
+        WebDriver.getDriver().navigate().back();
+    }
+
+    public void goToCart() {
+        WebDriver.getDriver().findElement(By.xpath(firstProduct.getSubmitInCart())).click();
+    }
+
     public void addFirstProductInCart() {
         WebDriver.getDriver().findElement(By.xpath(firstProduct.getProductXPath())).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(firstProduct.getProductXPath())));
         WebDriver.getDriver().findElement(By.xpath(firstProduct.getButtonAddToCart())).click();
-        WebDriver.getDriver().findElement(By.xpath(firstProduct.getSubmitInCart())).click();
     }
 
     public void addThirdProductInCart() {
         WebDriver.getDriver().findElement(By.xpath(thirdProduct.getProductXPath())).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(thirdProduct.getProductXPath())));
         WebDriver.getDriver().findElement(By.xpath(thirdProduct.getButtonAddToCart())).click();
-        WebDriver.getDriver().findElement(By.xpath(thirdProduct.getSubmitInCart())).click();
     }
 }

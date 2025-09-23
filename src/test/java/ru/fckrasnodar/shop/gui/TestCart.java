@@ -1,9 +1,11 @@
 package ru.fckrasnodar.shop.gui;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class TestCart extends TestBase {
@@ -21,9 +23,10 @@ public class TestCart extends TestBase {
         homePage.clickLinkCartInformer();
         Cart cart = new Cart();
 
-        Assertions.assertEquals("Ваша корзина пуста", cart.getCartEmptyText());
-        Assertions.assertEquals("Перейти на главную страницу", cart.getCartEmptyActionsText());
-
+        assertAll(
+                () -> assertEquals("Ваша корзина пуста", cart.getCartEmptyText()),
+                () -> assertEquals("Перейти на главную страницу", cart.getCartEmptyActionsText())
+        );
     }
 
     @Test
@@ -40,20 +43,22 @@ public class TestCart extends TestBase {
 
         ProductHandler productHandler = new ProductHandler();
         productHandler.addFirstProductInCart();
+        productHandler.goToCart();
 
         Cart cart = new Cart();
 
-        Assertions.assertEquals("КОРЗИНА", cart.getHeaderCartText());
-        Assertions.assertEquals("← Вернуться к покупкам", cart.getLinkBackText());
-        Assertions.assertEquals(productHandler.firstProduct.getName(),cart.getCartProductText(),"Наименование товаров не совпадает");
-        Assertions.assertEquals(productHandler.firstProduct.getPrice(),cart.getPriceProductText(),"Цена товара отличается");
-        Assertions.assertEquals(String.valueOf(productHandler.firstProduct.getAmount()),cart.getFieldProductQuantityText(),"Количество товара не совпадает");
-
+        assertAll(
+                () -> assertEquals("КОРЗИНА", cart.getHeaderCartText()),
+                () -> assertEquals("← Вернуться к покупкам", cart.getLinkBackText()),
+                () -> assertEquals(productHandler.firstProduct.getName(), cart.getCartProductText(), "Наименование товаров не совпадает"),
+                () -> assertEquals(productHandler.firstProduct.getPrice(), cart.getPriceProductText(), "Цена товара отличается"),
+                () -> assertEquals(String.valueOf(productHandler.firstProduct.getAmount()), cart.getFieldProductQuantityText(), "Количество товара не совпадает")
+        );
     }
 
     @Test
     @DisplayName("Add item to cart, check increase, decrease")
-    public void openSearchFormSendKeysProductClickSubmitAddProductInCarItemRemovalIncreaseDecreaseReturnShop(){
+    public void openSearchFormSendKeysProductClickSubmitAddProductInCarItemRemovalIncreaseDecreaseReturnShop() {
         HomePage homePage = new HomePage();
         homePage.clickLinkSearchIcon();
 
@@ -65,25 +70,17 @@ public class TestCart extends TestBase {
 
         ProductHandler productHandler = new ProductHandler();
         productHandler.addThirdProductInCart();
+        productHandler.goToCart();
 
         Cart cart = new Cart();
-
-        Assertions.assertEquals("КОРЗИНА", cart.getHeaderCartText());
-        Assertions.assertEquals(productHandler.thirdProduct.getName(),cart.getCartProductText(),"Наименование товаров не совпадает");
-
         cart.clickButtonPlusProduct();
 
-        Assertions.assertEquals(String.valueOf(productHandler.thirdProduct.getAmount()+1),cart.getFieldProductQuantityText(),"Количество товара не совпадает");
-
-        cart.clickButtonMinusProduct();
-
-        Assertions.assertEquals(String.valueOf(productHandler.thirdProduct.getAmount()),cart.getFieldProductQuantityText(),"Количество товара не совпадает");
-
+        assertEquals(String.valueOf(productHandler.thirdProduct.getAmount() + 1), cart.getFieldProductQuantityText(), "Количество товара не совпадает");
     }
 
     @Test
-    @DisplayName("check item removal, increase, decrease, and return to shopping")
-    public void openSearchFormSendKeysProductClickSubmitAddProductInCarItemRemovalReturnShop(){
+    @DisplayName("Add item to cart, check decrease")
+    public void openSearchFormSendKeysProductClickSubmitAddProductInCarItemDecrease() {
         HomePage homePage = new HomePage();
         homePage.clickLinkSearchIcon();
 
@@ -95,27 +92,54 @@ public class TestCart extends TestBase {
 
         ProductHandler productHandler = new ProductHandler();
         productHandler.addThirdProductInCart();
+        productHandler.goToCart();
+
+        Cart cart = new Cart();
+        cart.clickButtonPlusProduct();
+        cart.clickButtonMinusProduct();
+
+        assertEquals(String.valueOf(productHandler.thirdProduct.getAmount()), cart.getFieldProductQuantityText(), "Количество товара не совпадает");
+    }
+
+
+    @Test
+    @DisplayName("check item removal, increase, decrease, and return to shopping")
+    public void openSearchFormSendKeysProductClickSubmitAddProductInCarItemRemovalReturnShop() {
+        HomePage homePage = new HomePage();
+        homePage.clickLinkSearchIcon();
+
+        SearchForm searchForm = new SearchForm();
+        searchForm.clickSearchFormVisible();
+        searchForm.clickSearchFormVisibleText();
+        searchForm.sendKeysSearchFormVisibleText("куртка");
+        searchForm.clickButtonSearchSubmit();
+
+        ProductHandler productHandler = new ProductHandler();
+        productHandler.addThirdProductInCart();
+        productHandler.goToCart();
 
         Cart cart = new Cart();
         cart.clickDeleteProductInCart();
 
-        Assertions.assertEquals("Удалить товар из корзины?", cart.getDeleteDialogHeaderText());
+        assertEquals("Удалить товар из корзины?", cart.getDeleteDialogHeaderText());
 
         cart.clickButtonCloseDialog();
         cart.clickDeleteProductInCart();
 
-        Assertions.assertEquals("НЕ УДАЛЯТЬ", cart.getButtonCanselDeleteDialog());
-        Assertions.assertEquals("УДАЛИТЬ", cart.getButtonConfirmDeleteDialog());
+        assertAll(
+                () -> assertEquals("НЕ УДАЛЯТЬ", cart.getButtonCanselDeleteDialog()),
+                () -> assertEquals("УДАЛИТЬ", cart.getButtonConfirmDeleteDialog())
+        );
 
         cart.clickButtonCanselDeleteDialog();
         cart.clickLinkBack();
-        Assertions.assertEquals("Куртка детская Puma FC Krasnodar School Reversible Jacket",productHandler.thirdProduct.getName());
 
+        assertEquals("Куртка детская Puma FC Krasnodar School Reversible Jacket", productHandler.thirdProduct.getName());
     }
 
     @Test
     @DisplayName("Check whether the price of two items is totaled and the quantity of items on the information label")
-    public void openSearchFormSendKeysProductClickSubmitAddTwoProductInCarCheckPriceCartWatchInformLabel(){
+    public void openSearchFormSendKeysProductClickSubmitAddTwoProductInCarCheckPriceCartWatchInformLabel() {
         HomePage homePage = new HomePage();
         homePage.clickLinkSearchIcon();
 
@@ -127,34 +151,29 @@ public class TestCart extends TestBase {
 
         ProductHandler productHandler = new ProductHandler();
         productHandler.addThirdProductInCart();
+        productHandler.backPage();
+        productHandler.addFirstProductInCart();
+        productHandler.goToCart();
 
         Cart cart = new Cart();
-        HomePage homePage2 = new HomePage();
-        homePage2.clickLinkSearchIcon();
 
-        SearchForm searchForm2 = new SearchForm();
-        searchForm2.clickSearchFormVisible();
-        searchForm2.clickSearchFormVisibleText();
-        searchForm2.sendKeysSearchFormVisibleText("куртка");
-        searchForm2.clickButtonSearchSubmit();
-
-        ProductHandler productHandler2 = new ProductHandler();
-        productHandler2.addFirstProductInCart();
-
-        Assertions.assertEquals(productHandler.thirdProduct.getName(),cart.getCartProductText(),"Наименование первого товара не совпадает");
-        Assertions.assertEquals(productHandler2.firstProduct.getName(),cart.getCartProductSecondText(),"Наименование второго товара не совпадает");
-        Assertions.assertEquals(productHandler.thirdProduct.getPrice(),cart.getPriceProductText(),"Цена первого товара отличается");
-        Assertions.assertEquals(productHandler2.firstProduct.getPrice(),cart.getPriceSecondProductText(),"Цена второго товара отличается");
-        Assertions.assertEquals(String.valueOf(productHandler.thirdProduct.getAmount()),cart.getFieldProductQuantityText(),"Количество первого товара не совпадает");
-        Assertions.assertEquals(String.valueOf(productHandler2.firstProduct.getAmount()),cart.getFieldSecondProductQuantityText(),"Количество второго товара не совпадает");
+        assertAll(
+                () -> assertEquals(productHandler.thirdProduct.getName(), cart.getCartProductText(), "Наименование первого товара не совпадает"),
+                () -> assertEquals(productHandler.firstProduct.getName(), cart.getCartProductSecondText(), "Наименование второго товара не совпадает"),
+                () -> assertEquals(productHandler.thirdProduct.getPrice(), cart.getPriceProductText(), "Цена первого товара отличается"),
+                () -> assertEquals(productHandler.firstProduct.getPrice(), cart.getPriceSecondProductText(), "Цена второго товара отличается"),
+                () -> assertEquals(String.valueOf(productHandler.thirdProduct.getAmount()), cart.getFieldProductQuantityText(), "Количество первого товара не совпадает"),
+                () -> assertEquals(String.valueOf(productHandler.firstProduct.getAmount()), cart.getFieldSecondProductQuantityText(), "Количество второго товара не совпадает")
+        );
 
         int actualProductHandlerTotalPrice = 0;
-        int firstTotalPrice = Integer.parseInt(productHandler.thirdProduct.getPrice().replaceAll("[^\\d]",""));
-        int secondTotalPrice = Integer.parseInt(productHandler2.firstProduct.getPrice().replaceAll("[^\\d]",""));
-        int cartTotalPrice = Integer.parseInt(cart.getTotalPriceCartText().replaceAll("[^\\d]",""));
-        actualProductHandlerTotalPrice = firstTotalPrice + secondTotalPrice;
+        int firstTotalPrice = Integer.parseInt(productHandler.thirdProduct.getPrice().replaceAll("[^\\d]", ""));
+        int secondTotalPrice = Integer.parseInt(productHandler.firstProduct.getPrice().replaceAll("[^\\d]", ""));
+        int cartTotalPrice = Integer.parseInt(cart.getTotalPriceCartText().replaceAll("[^\\d]", ""));
+        actualProductHandlerTotalPrice = (firstTotalPrice * productHandler.thirdProduct.getAmount())  +
+                                         (secondTotalPrice * productHandler.firstProduct.getAmount());
 
-        Assertions.assertEquals(actualProductHandlerTotalPrice,cartTotalPrice,"Итоговая цена не совпадает");
-        Assertions.assertEquals("2",cart.getCartInformerAmoundText());
+         assertEquals(actualProductHandlerTotalPrice, cartTotalPrice, "Итоговая цена не совпадает");
+         assertEquals("2", cart.getCartInformerAmoundText());
     }
 }

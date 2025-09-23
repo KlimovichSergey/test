@@ -1,9 +1,10 @@
 package ru.fckrasnodar.shop.gui;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPasswordRecovery extends TestBase {
     @BeforeEach
@@ -19,20 +20,22 @@ public class TestPasswordRecovery extends TestBase {
         PasswordRecoveryPage passwordRecoveryPage = new PasswordRecoveryPage();
         passwordRecoveryPage.clickLinkForgotPassword();
 
-        Assertions.assertEquals("Email", passwordRecoveryPage.getForgotPasswordFormEmailText());
-        Assertions.assertTrue(passwordRecoveryPage.getDisplayedEmailText(),"Email");
-        Assertions.assertEquals("ВОССТАНОВЛЕНИЕ ПАРОЛЯ",passwordRecoveryPage.getHeaderForgotPasswordText());
+        assertAll(
+                () -> assertEquals("Email", passwordRecoveryPage.getForgotPasswordFormEmailText()),
+                () -> assertTrue(passwordRecoveryPage.getDisplayedEmailText(), "Email"),
+                () -> assertEquals("ВОССТАНОВЛЕНИЕ ПАРОЛЯ", passwordRecoveryPage.getHeaderForgotPasswordText())
+        );
     }
 
     @Test
     @DisplayName("Input wrong email and receive the appropriate message")
-    public void inputEmailWrongEmailClickRecoveryPasswordGetText(){
+    public void inputEmailWrongEmailClickRecoveryPasswordGetText() {
         PasswordRecoveryPage passwordRecoveryPage = new PasswordRecoveryPage();
         passwordRecoveryPage.clickLinkForgotPassword();
         passwordRecoveryPage.sendInputEmailRecoveryPassword("test@test");
         passwordRecoveryPage.clickButtonRecoveryPassword();
 
-        Assertions.assertEquals("Пользователь с этим email-адресом не найден.",passwordRecoveryPage.getErrorMessageEmailText());
+        assertEquals("Пользователь с этим email-адресом не найден.", passwordRecoveryPage.getErrorMessageEmailText());
     }
 
     @Test
@@ -43,18 +46,18 @@ public class TestPasswordRecovery extends TestBase {
         passwordRecoveryPage.sendInputEmailRecoveryPassword("00000");
         passwordRecoveryPage.clickButtonRecoveryPassword();
 
-        Assertions.assertEquals("Проверьте правильность адреса",passwordRecoveryPage.getErrorMessageEmailText());
+        assertEquals("Проверьте правильность адреса", passwordRecoveryPage.getErrorMessageEmailText());
     }
 
     @Test
     @DisplayName("Input empty field email and receive appropriate message")
-    public void inputEmailEmptyFieldClickRecoveryPasswordGetText(){
+    public void inputEmailEmptyFieldClickRecoveryPasswordGetText() {
         PasswordRecoveryPage passwordRecoveryPage = new PasswordRecoveryPage();
         passwordRecoveryPage.clickLinkForgotPassword();
         passwordRecoveryPage.sendInputEmailRecoveryPassword("");
         passwordRecoveryPage.clickButtonRecoveryPassword();
 
-        Assertions.assertEquals("Введите свой email-адрес.",passwordRecoveryPage.getErrorMessageEmailText());
+        assertEquals("Введите свой email-адрес.", passwordRecoveryPage.getErrorMessageEmailText());
     }
 
     @Test
@@ -65,7 +68,9 @@ public class TestPasswordRecovery extends TestBase {
         passwordRecoveryPage.sendInputEmailRecoveryPassword("test@test.com");
         passwordRecoveryPage.clickButtonRecoveryPassword();
 
-        Assertions.assertTrue(passwordRecoveryPage.getRecoveryPasswordInfoMessageText().contains("Проверьте входящую почту для адреса"));
-        Assertions.assertTrue(passwordRecoveryPage.getRecoveryPasswordInfoMessageText().contains("мы отправили вам сообщение со ссылкой для восстановления пароля."));
+        assertAll(
+                () -> assertTrue(passwordRecoveryPage.getRecoveryPasswordInfoMessageText().contains("Проверьте входящую почту для адреса")),
+                () -> assertTrue(passwordRecoveryPage.getRecoveryPasswordInfoMessageText().contains("мы отправили вам сообщение со ссылкой для восстановления пароля."))
+        );
     }
 }
