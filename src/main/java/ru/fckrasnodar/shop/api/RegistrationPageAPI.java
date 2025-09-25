@@ -34,9 +34,4 @@ public class RegistrationPageAPI {
         headers.put("content-type", "application/x-www-form-urlencoded; charset=UTF-8");
         return headers;
     }
-
-    private String getBody(String firstName, String middleName, String lastName, String phone, String email, String birthday, String password, String password_confirm) {
-        return String.format("{\"lastname\" :\"%s\",\"firstname\":\"%s\",\"middlename\":\"%s\" ,\"phone\":\"email\":\"%s\"," +
-                "\"birthday\":\"%s\",\"password\":\"%s\",\"password_confirm\":\"%s\"}", lastName, firstName, middleName, phone, email, birthday, password, password_confirm);
-    }
 }

@@ -8,7 +8,7 @@ import static org.hamcrest.core.Is.is;
 public class TestRegistrationPageAPI {
 
     @Test
-    public void testfootball(){
+    public void testRegistrationPage(){
         String URL = "https://shop.fckrasnodar.ru/signup/";
         String body = "data%5Blastname%5D=23@#$%\n" +
                 "&data%5Bfirstname%5D=\n" +
