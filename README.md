@@ -9,6 +9,7 @@
 - ***Java***
 - ***Maven***
 - ***JUnit 5***
+- ***Selenium Webdriver***
 - ***Rest Assured***
 - ***AssertJ***
 
