@@ -1,8 +1,5 @@
 package ru.fckrasnodar.shop.gui;
 
-import org.openqa.selenium.By;
-import ru.fckrasnodar.shop.singleton.WebDriver;
-
 public class Product {
     private final String productXPath;
     private final String buttonAddToCart = "//div[@class='add-to-cart']//button";
