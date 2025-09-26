@@ -1,94 +1,98 @@
 package ru.fckrasnodar.shop.api;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class TestLoginPageAPI {
+public class TestLoginPageAPI extends BaseTest {
+    private final Gson gson = new Gson();
 
     @Test
     @DisplayName("unauthorized user login")
-    public void openLoginPageInputEmailAndPassword(){
-        String URL = "https://shop.fckrasnodar.ru/login/";
-        String body = "login=klimovichsergey122%40gmail.com&password=dgfdgfdfdgdg&remember=0&remember=1&wa_auth_login=1&_csrf=&wa_json_mode=1&need_redirects=1";
+    public void openLoginPageInputEmailAndPassword() {
+        service.doRequest();
 
-        given()
-                .header("content-type","application/x-www-form-urlencoded; charset=UTF-8")
-                .header("x-requested-with","XMLHttpRequest")
-                .body(body)
-        .when()
-                .post(URL)
-        .then()
-                .log().all()
-                .statusCode(200)
-                .body("status",is("fail"))
-                .body("errors.auth[0]",equalTo("Неправильное имя пользователя или пароль."))
-                .body("data",hasSize(0));
+        JsonObject jsonResponse = gson.fromJson(service.getBody(), JsonObject.class);
+        List<String> keys = new ArrayList<>(jsonResponse.keySet());
+
+        assertAll(
+                () -> assertEquals(200, service.getStatusCode()),
+                () -> assertEquals("status", keys.get(0)),
+                () -> assertEquals("fail", jsonResponse.get("status").getAsString()),
+                () -> assertEquals("errors", keys.get(1)),
+                () -> assertEquals("auth", jsonResponse.getAsJsonObject("errors").keySet().iterator().next()),
+                () -> assertEquals("Неправильное имя пользователя или пароль.", jsonResponse.getAsJsonObject("errors").get("auth").getAsString()),
+                () -> assertEquals("data", keys.get(2)),
+                () -> assertTrue(jsonResponse.getAsJsonArray("data").isEmpty(), "it is not an empty array")
+        );
     }
 
     @Test
     @DisplayName("User login without Email")
-    public void openLoginPageInputPassword(){
-        String URL = "https://shop.fckrasnodar.ru/login/";
-        String body = "login=&password=dgfdgfdfdgdg&remember=0&remember=1&wa_auth_login=1&_csrf=&wa_json_mode=1&need_redirects=1";
+    public void openLoginPageInputPassword() {
+        service.doRequest("", "asd1##34354544");
 
-        given()
-                .header("content-type","application/x-www-form-urlencoded; charset=UTF-8")
-                .header("x-requested-with","XMLHttpRequest")
-                .body(body)
-        .when()
-                .post(URL)
-        .then()
-                .log().all()
-                .statusCode(200)
-                .body("status",is("fail"))
-                .body("errors.login[0]",equalTo("Логин обязателен"))
-                .body("data",hasSize(0));
+        JsonObject jsonResponse = gson.fromJson(service.getBody(), JsonObject.class);
+
+        assertAll(
+                () -> assertEquals(200, service.getStatusCode()),
+                () -> assertEquals("fail", jsonResponse.get("status").getAsString()),
+                () -> assertEquals("login", jsonResponse.getAsJsonObject("errors").keySet().iterator().next()),
+                () -> assertEquals("Логин обязателен", jsonResponse.getAsJsonObject("errors").get("login").getAsString()),
+                () -> assertTrue(jsonResponse.getAsJsonArray("data").isEmpty(), "it is not an empty array")
+        );
     }
 
     @Test
     @DisplayName("Create an empty login form")
-    public void openLoginFormSubmitEmpty(){
-        String URL = "https://shop.fckrasnodar.ru/login/";
-        String body = "login=&password=&remember=0&remember=1&wa_auth_login=1&_csrf=&wa_json_mode=1&need_redirects=1";
+    public void openLoginFormSubmitEmpty() {
+        service.doRequest("", "");
 
-        given()
-                .header("content-type","application/x-www-form-urlencoded; charset=UTF-8")
-                .header("x-requested-with","XMLHttpRequest")
-                .body(body)
-        .when()
-                .post(URL)
-        .then()
-                .log().all()
-                .statusCode(200)
-                .body("status",is("fail"))
-                .body("errors.login[0]",equalTo("Логин обязателен"))
-                .body("errors.password[0]",equalTo("Пароль обязателен"))
-                .body("data",hasSize(0));
+        JsonObject jsonResponse = gson.fromJson(service.getBody(), JsonObject.class);
+        List<String> keys = new ArrayList<>(jsonResponse.getAsJsonObject("errors").keySet());
+
+        assertAll(
+                () -> assertEquals(200, service.getStatusCode()),
+                () -> assertEquals("fail", jsonResponse.get("status").getAsString()),
+                () -> assertEquals("login", keys.get(0)),
+                () -> assertEquals("Логин обязателен", jsonResponse.getAsJsonObject("errors").get("login").getAsString()),
+                () -> assertEquals("password", keys.get(1)),
+                () -> assertEquals("Пароль обязателен", jsonResponse.getAsJsonObject("errors").get("login").getAsString()),
+                () -> assertTrue(jsonResponse.getAsJsonArray("data").isEmpty(), "it is not an empty array")
+        );
     }
 
     @Test
     @DisplayName("Authorized user login")
-    public void openFormAuthorizedUser(){
-        String URL = "https://shop.fckrasnodar.ru/login/";
-        String body = "login=test@test10.com&password=123&remember=0&remember=1&wa_auth_login=1&_csrf=&wa_json_mode=1&need_redirects=1";
+    public void openFormAuthorizedUser() {
+        service.doRequest("test@test10.com", "123");
 
-        given()
-                .header("content-type","application/x-www-form-urlencoded; charset=UTF-8")
-                .header("x-requested-with","XMLHttpRequest")
-                .body(body)
-        .when()
-                .post(URL)
-        .then()
-                .log().all()
-                .statusCode(200)
-                .body("status",is("ok"))
-                .body("data.redirect_url",equalTo("/my/"))
-                .body("data.redirect_code",equalTo(null));
+        JsonObject jsonResponse = gson.fromJson(service.getBody(), JsonObject.class);
+        List<String> keys = new ArrayList<>(jsonResponse.keySet());
+        List<String> keysData = new ArrayList<>(jsonResponse.getAsJsonObject("data").keySet());
 
+        assertAll(
+                () -> assertEquals(200, service.getStatusCode()),
+                () -> assertEquals("ok", jsonResponse.get("status").getAsString()),
+                () -> assertEquals("data", keys.get(1)),
+                () -> assertEquals("redirect_url", keysData.get(0)),
+                () -> assertEquals("/my/", jsonResponse.getAsJsonObject("data").get("redirect_url").getAsString()),
+                () -> assertEquals("redirect_code", keysData.get(1)),
+                () -> assertTrue(jsonResponse.getAsJsonObject("data").get("redirect_code").isJsonNull(), "This value is not null")
+        );
     }
 }

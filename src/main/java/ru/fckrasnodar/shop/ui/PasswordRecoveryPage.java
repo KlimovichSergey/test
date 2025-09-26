@@ -1,4 +1,4 @@
-package ru.fckrasnodar.shop.gui;
+package ru.fckrasnodar.shop.ui;
 
 import org.openqa.selenium.By;
 import ru.fckrasnodar.shop.singleton.WebDriver;

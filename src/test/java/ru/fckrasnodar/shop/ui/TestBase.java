@@ -1,4 +1,4 @@
-package ru.fckrasnodar.shop.gui;
+package ru.fckrasnodar.shop.ui;
 
 import org.junit.jupiter.api.AfterEach;
 import ru.fckrasnodar.shop.singleton.WebDriver;

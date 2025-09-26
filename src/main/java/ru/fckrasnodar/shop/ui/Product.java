@@ -1,4 +1,4 @@
-package ru.fckrasnodar.shop.gui;
+package ru.fckrasnodar.shop.ui;
 
 public class Product {
     private final String productXPath;
