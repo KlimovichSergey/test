@@ -62,7 +62,7 @@ public class TestLoginPageAPI extends BaseTest {
                 () -> assertEquals("login", keys.get(0)),
                 () -> assertEquals("Логин обязателен", jsonResponse.getAsJsonObject("errors").get("login").getAsString()),
                 () -> assertEquals("password", keys.get(1)),
-                () -> assertEquals("Пароль обязателен", jsonResponse.getAsJsonObject("errors").get("login").getAsString()),
+                () -> assertEquals("Пароль обязателен", jsonResponse.getAsJsonObject("errors").get("password").getAsString()),
                 () -> assertTrue(jsonResponse.getAsJsonArray("data").isEmpty(), "it is not an empty array")
         );
     }
