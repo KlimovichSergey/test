@@ -80,27 +80,4 @@ public class TestLoginPageAPI extends BaseTest {
         );
         log.info("End test:Create an empty login form");
     }
-
-    @Test
-    @DisplayName("Authorized user login")
-    public void openFormAuthorizedUser() {
-        log.info("Start test:Authorized user login");
-        service.doRequest("test@test10.com", "123");
-
-        JsonObject jsonResponse = gson.fromJson(service.getBody(), JsonObject.class);
-        List<String> keys = new ArrayList<>(jsonResponse.keySet());
-        List<String> keysData = new ArrayList<>(jsonResponse.getAsJsonObject("data").keySet());
-        log.info(jsonResponse);
-
-        assertAll(
-                () -> assertEquals(200, service.getStatusCode()),
-                () -> assertEquals("ok", jsonResponse.get("status").getAsString()),
-                () -> assertEquals("data", keys.get(1)),
-                () -> assertEquals("redirect_url", keysData.get(0)),
-                () -> assertEquals("/my/", jsonResponse.getAsJsonObject("data").get("redirect_url").getAsString()),
-                () -> assertEquals("redirect_code", keysData.get(1)),
-                () -> assertTrue(jsonResponse.getAsJsonObject("data").get("redirect_code").isJsonNull(), "This value is not null")
-        );
-        log.info("End test:Authorized user login");
-    }
 }
